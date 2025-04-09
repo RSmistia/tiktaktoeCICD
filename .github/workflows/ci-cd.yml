@@ -130,8 +130,6 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
-          usernane: ${{ github.actor }}
-          password: ${{ secrets.TRIVY }}
       
       - name: Push Docker image
         uses: docker/build-push-action@v5

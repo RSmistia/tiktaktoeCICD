@@ -108,7 +108,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            sha-${{ github.sha }} 
+            type=sha, format=long
             type=ref,event=branch
             latest
       

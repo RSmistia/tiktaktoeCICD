@@ -120,6 +120,9 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           load: true
+          
+      - name: Debug - Show Docker Images
+        run: docker images
       
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.29.0

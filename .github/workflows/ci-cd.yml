@@ -131,8 +131,8 @@ jobs:
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
         env:
-            TRIVY_USERNAME = "a"
-            TRIVY_PASSWORD = "a"
+            TRIVY_USERNAME = ${{ github.actor }}
+            TRIVY_PASSWORD = ${{ secrets.TOKEN }}
       
       - name: Push Docker image
         uses: docker/build-push-action@v5

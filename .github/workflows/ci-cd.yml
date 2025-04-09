@@ -124,7 +124,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.29.0
         with:
-          image-ref: ghcr.io/RSmistia/tiktaktoe_CICD:sha-${{ github.sha }}
+          image-ref: ghcr.io/RSmistia/tiktaktoeCICD:sha-${{ github.sha }}
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true

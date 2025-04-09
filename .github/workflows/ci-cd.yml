@@ -132,7 +132,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
         env:
             TRIVY_USERNAME: ${{ github.actor }}
-            TRIVY_PASSWORD: ${{ secrets.TOKEN }}
+            TRIVY_PASSWORD: "CvganezT?2"
       
       - name: Push Docker image
         uses: docker/build-push-action@v5

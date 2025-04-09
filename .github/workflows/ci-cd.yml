@@ -130,9 +130,6 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
-        env:
-            TRIVY_USERNAME: ${{ github.actor }}
-            TRIVY_PASSWORD: ${{ secrets.TRIVY }}
       
       - name: Push Docker image
         uses: docker/build-push-action@v5

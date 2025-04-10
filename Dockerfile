@@ -8,7 +8,7 @@ RUN apk add --no-cache \
     libxml2=2.13.4-r5 \
     libxslt=1.1.42-r2 \
     xz-libs=5.6.3-r1
-RUN apk remove --no-cache \
+RUN apk del --no-cache \
     c-ares=1.34.3-r0 \
     libexpat=2.6.4-r0 \
     libxml2=2.13.4-r3 \

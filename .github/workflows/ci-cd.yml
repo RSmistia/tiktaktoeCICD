@@ -123,11 +123,14 @@ jobs:
           
       - name: Debug - Show Docker Images
         run: docker images
+
+      - name: downcase REPO
+        run: echo "REPO=${env.IMAGE_NAME,,}" >>${GITHUB_ENV}
       
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.29.0
         with:
-          scan-ref: ${{ env.REGISTRY }}/${{ toLower(env.IMAGE_NAME) }}:sha-${{ github.sha }}
+          scan-ref: ${{ env.REGISTRY }}/${{ GITHUB_ENV }}:sha-${{ github.sha }}
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true

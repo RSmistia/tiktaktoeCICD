@@ -126,7 +126,7 @@ jobs:
         run: docker images
 
       - name: downcase REPO
-        run: echo "IMAGE_NAME_LOWER=${env.IMAGE_NAME,,}" >> $GITHUB_ENV
+        run: echo "IMAGE_NAME_LOWER=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
     
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.29.0

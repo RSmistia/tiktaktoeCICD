@@ -80,6 +80,7 @@ jobs:
     env:
       REGISTRY: ghcr.io
       IMAGE_NAME: ${{ github.repository }}
+      IMAGE_NAME_LOWER : ${{ github.repository}}
     outputs:
       image_tag: ${{ steps.set_output.outputs.image_tag }}
     steps:
@@ -125,7 +126,7 @@ jobs:
         run: docker images
 
       - name: downcase REPO
-        run: echo "REPO=${env.IMAGE_NAME,,}" >>${GITHUB_ENV}
+        run: echo "REPO=${env.IMAGE_NAME,,}" >>${env.IMAGE_NAME_LOWER}
       
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.29.0

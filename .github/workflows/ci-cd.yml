@@ -125,7 +125,7 @@ jobs:
       - name: Debug - Show Docker Images
         run: docker images
 
-      - name: downcase REPO
+      - name: lowercase REPO
         run: echo "IMAGE_NAME_LOWER=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
     
       - name: Run Trivy vulnerability scanner

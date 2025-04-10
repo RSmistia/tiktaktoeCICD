@@ -30,7 +30,7 @@ jobs:
 
   sonar:
     name: Static Code Analysis - SonarQube
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4 #tr

@@ -2,7 +2,7 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 COPY package*.json ./
-RUN apk upgrade --no-cache \
+RUN apk add --no-cache \
     c-ares=1.34.5-r0 \
     libexpat=2.7.0-r0 \
     libxml2=2.13.4-r5 \

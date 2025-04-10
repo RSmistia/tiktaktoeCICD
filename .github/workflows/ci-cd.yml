@@ -75,7 +75,7 @@ jobs:
 
   docker:
     name: Docker Build and Push
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.10
     needs: [build]
     env:
       REGISTRY: ghcr.io

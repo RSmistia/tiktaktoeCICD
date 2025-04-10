@@ -80,7 +80,7 @@ jobs:
     env:
       REGISTRY: ghcr.io
       IMAGE_NAME: ${{ github.repository }}
-      IMAGE_NAME_LOWER : ${{ github.repository}}
+      IMAGE_NAME_LOWER : ${{ github.repository.lower() }}
     outputs:
       image_tag: ${{ steps.set_output.outputs.image_tag }}
     steps:

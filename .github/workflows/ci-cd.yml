@@ -175,7 +175,7 @@ jobs:
         run: |
           # Define the new image with tag
           echo "IMAGE_NAME_LOWER=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
-          echo ${IMAGE_NAME_LOWER}
+          echo ${env.IMAGE_NAME_LOWER}
           NEW_IMAGE="${REGISTRY}/${IMAGE_NAME_LOWER}:${IMAGE_TAG}"
           
           # Update the deployment file directly

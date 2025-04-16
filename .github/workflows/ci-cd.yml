@@ -33,7 +33,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 #ah?
+        uses: actions/checkout@v4 #ah??
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Scan for Vulnerabilities (SAST and SCA)

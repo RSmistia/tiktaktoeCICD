@@ -165,7 +165,7 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
       
-      - name: Update Kubernetes deployment file #omg deu
+      - name: Update Kubernetes deployment file 
         env:
           IMAGE_TAG: sha-${{ github.sha }}
           GITHUB_REPOSITORY: ${{ github.repository }}

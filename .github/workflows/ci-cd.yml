@@ -148,6 +148,12 @@ jobs:
       - name: Set image tag output
         id: set_output
         run: echo "image_tag=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+        
+      - name: Run container for smoke testing
+        run: |
+          docker run -d -p 3000:3000 --name myapp ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWER }}:sha-${{ github.sha }}
+          sleep 10  # Give the app time to start
+          curl -v http://localhost:3000/healthcheck || exit 1
 
   update-k8s:
     name: Update Kubernetes Deployment

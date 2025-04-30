@@ -152,8 +152,8 @@ jobs:
       - name: Run container for smoke testing
         run: |
           docker run -d -p 3000:80  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWER }}:sha-${{ github.sha }}
-          sleep 2000  # Give the app time to start
-          curl -v http://localhost:3000/healthcheck || exit 1
+          sleep 10  # Give the app time to start
+          curl -v http://localhost:3000 || exit 1
 
   update-k8s:
     name: Update Kubernetes Deployment

@@ -149,7 +149,7 @@ jobs:
         id: set_output
         run: echo "image_tag=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
 
-      - name: Run container for smoke testing
+      - name: Run container for BurpSuite testing
         run: |
           docker run -d -p 1010:80  ghcr.io/rsmistia/tiktaktoecicd:sha-fac4d50748869f8e4047a7ffde05ab29ef063d3f
           sleep 10  # Give the app time to start

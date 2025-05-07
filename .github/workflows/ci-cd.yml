@@ -215,16 +215,51 @@ jobs:
           echo "Your public SonarQube URL is: $public_url"
 
 
+          # Build the JSON payload with jq
           json_payload=$(jq -n --arg url "$public_url" '{
-            scan_configurations: [{name: "Crawl and Audit - Fast", type: "NamedConfiguration"}],
-                urls: [$url]
+          scan_configurations: [{
+            name: "Crawl and Audit - Fast",
+            type: "NamedConfiguration"
+          }],
+          urls: [$url]
           }')
 
-          curl -vgw "\n" -X POST "https://76afc4bf58e96527840e943890280203.serveo.net/v0.1/scan" -d "$json_payload"
+          # Send the POST request and capture the Location header
+          scan_id=$(curl -s -D - -o /dev/null -X POST \
+            -H "Content-Type: application/json" \
+            -d "$json_payload" \
+            "https://76afc4bf58e96527840e943890280203.serveo.net/v0.1/scan" \
+            | awk '/^location:/ { print $2 }' | tr -d '\r')
 
+          echo "Scan ID: $scan_id"
 
-          curl -s -X GET 'https://76afc4bf58e96527840e943890280203.serveo.net/v0.1/scan/20' | jq '.scan_metrics.crawl_and_audit_progress == 100  and (.issue_events[]?.issue.severity == "high")' | grep -q true && exit 1
-          
+          scan_result="https://76afc4bf58e96527840e943890280203.serveo.net/v0.1/scan/$scan_id"
+
+          echo "Waiting for scan to complete..."
+          retries=60  
+          while [ $retries -gt 0 ]; do
+          result=$(curl -s -X GET "$scan_result")
+          progress=$(echo "$result" | jq '.scan_metrics.crawl_and_audit_progress // 0')
+  
+          echo "Progress: $progress%"
+          if [ "$progress" -eq 100 ]; then
+          echo "Scan complete."
+          echo "$result"
+          # Check for high severity issues
+          echo "$result" | jq '
+            [.issue_events[]?.issue.severity] | any(. == "high")
+          ' | grep -q true && exit 1
+
+          exit 0
+          fi
+
+          sleep 5
+          ((retries--))
+          done
+
+          echo "Timed out waiting for scan to complete."
+          exit 1
+
 
   update-k8s:
     name: Update Kubernetes Deployment

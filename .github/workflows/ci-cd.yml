@@ -162,7 +162,7 @@ jobs:
           SSH_SERVER="serveo.net"
           OUTPUT_FILE="output.txt"
 
-          docker run -d -p $LOCAL_PORT:$REMOTE_PORT  "$IMAGE_NAME_LOWER"
+          docker run -d -p $LOCAL_PORT:$REMOTE_PORT  "$NEW_IMAGE"
           sleep 10  # Give the app time to start
           curl -v http://localhost:"$LOCAL_PORT" || exit 1
 

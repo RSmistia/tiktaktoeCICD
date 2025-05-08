@@ -151,9 +151,7 @@ jobs:
 
       - name: Run container for BurpSuite testing
         run: |
-          IMAGE_NAME_LOWER=$(echo "${GITHUB_REPOSITORY}" | tr '[:upper:]' '[:lower:]')
-          echo ${IMAGE_NAME_LOWER}
-          NEW_IMAGE="${REGISTRY}/${IMAGE_NAME_LOWER}:${IMAGE_TAG}"
+          NEW_IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWER }}:sha-${{ github.sha }}
 
           # Configuration variables
           SSH_KEY_PATH="$HOME/.ssh/id_rsa_autossh"

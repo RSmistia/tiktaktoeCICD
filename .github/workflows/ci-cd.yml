@@ -151,9 +151,9 @@ jobs:
 
       - name: Run container for BurpSuite testing
         run: |
-          docker run -d -p 1010:80  ghcr.io/rsmistia/tiktaktoecicd:sha-fac4d50748869f8e4047a7ffde05ab29ef063d3f
-          sleep 10  # Give the app time to start
-          curl -v http://localhost:1010 || exit 1
+          IMAGE_NAME_LOWER=$(echo "${GITHUB_REPOSITORY}" | tr '[:upper:]' '[:lower:]')
+          echo ${IMAGE_NAME_LOWER}
+          NEW_IMAGE="${REGISTRY}/${IMAGE_NAME_LOWER}:${IMAGE_TAG}"
 
           # Configuration variables
           SSH_KEY_PATH="$HOME/.ssh/id_rsa_autossh"
@@ -163,6 +163,10 @@ jobs:
           LOCAL_PORT=1010
           SSH_SERVER="serveo.net"
           OUTPUT_FILE="output.txt"
+
+          docker run -d -p $LOCAL_PORT:$REMOTE_PORT  "$IMAGE_NAME_LOWER"
+          sleep 10  # Give the app time to start
+          curl -v http://localhost:"$LOCAL_PORT" || exit 1
 
           # Clear previous output and keys
           echo "Cleaning up previous files..."

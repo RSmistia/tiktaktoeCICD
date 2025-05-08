@@ -218,7 +218,7 @@ jobs:
 
 
           # Build the JSON payload with jq
-          json_payload=$(jq -n --arg url localhost:1010 '{
+          json_payload=$(jq -n --arg url "$public_url" '{
           scan_configurations: [{
             name: "Crawl strategy - fastest",
             type: "NamedConfiguration"

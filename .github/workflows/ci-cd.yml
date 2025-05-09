@@ -230,12 +230,12 @@ jobs:
           scan_id=$(curl -s -D - -o /dev/null -X POST \
             -H "Content-Type: application/json" \
             -d "$json_payload" \
-            "https://934d099781768d10dd053d23316596e8.serveo.net/v0.1/scan" \
+            "https://7db9d55a057cc510340c4ed052181246.serveo.net/v0.1/scan" \
             | awk '/^location:/ { print $2 }' | tr -d '\r')
 
           echo "Scan ID: $scan_id"
 
-          scan_result="https://934d099781768d10dd053d23316596e8.serveo.net/v0.1/scan/$scan_id"
+          scan_result="https://7db9d55a057cc510340c4ed052181246.serveo.net/v0.1/scan/$scan_id"
 
           echo "Waiting for scan to complete..."
           retries=60  

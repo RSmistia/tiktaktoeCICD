@@ -249,7 +249,7 @@ jobs:
           echo "$result"
           # Check for high severity issues
           echo "$result" | jq '
-            [.issue_events[]?.issue.severity] | any(. == "high")
+            [.issue_events[]?.issue.severity] | any(. == "medium")
           ' | grep -q true && exit 1
 
           exit 0

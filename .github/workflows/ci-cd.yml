@@ -41,13 +41,9 @@ jobs:
           debricked-sca-scan: true
         env:
           FOD_URL: https://trial.fortify.com
-          #FOD_TENANT: Timestamp_674888963_FMA_789580524 
-          #FOD_USER: ruben.n.sousa@timestamp.pt
-          #FOD_PASSWORD: CvganezT?2
           FOD_CLIENT_ID: a2050b40-a391-404d-bbd8-e1913b85ca46
           FOD_CLIENT_SECRET: MClmVnRnUGg1WU11bUkoM3BzQnN1bmc5JHg5YVdy0
-          # FOD_LOGIN_EXTRA_OPTS: --socket-timeout=60s
-          FOD_RELEASE: test:1.0
+          # FOD_RELEASE: test:1.0
           # DO_SETUP: true
           # SETUP_ACTION: https://scm.my.org/shared-repos/fcli-actions/setup.yaml
           # SETUP_EXTRA_OPTS: --copy-from "${{ github.repository }}:${{ github.event.repository.default_branch }}"

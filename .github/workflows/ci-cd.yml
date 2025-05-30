@@ -42,7 +42,7 @@ jobs:
         env:
           FOD_URL: https://login.microfocus.com/nidp/saml2/sso?id=75&sid=0&option=credential&sid=0
           FOD_TENANT: Timestamp_674888963_FMA_789580524 
-          FOD_USER: ruben.n.sousa@timestamp.pt
+          FOD_USER: https://ospastp.saas.microfocus.com/osp/a/trial.fortify.com/auth/app?sid=1
           FOD_PASSWORD: CvganezT?2
           # FOD_CLIENT_ID: ${{secrets.FOD_CLIENT_ID}}
           # FOD_CLIENT_SECRET: ${{secrets.FOD_CLIENT_SECRET}}

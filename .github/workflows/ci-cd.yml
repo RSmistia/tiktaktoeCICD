@@ -46,10 +46,10 @@ jobs:
           FOD_RELEASE: javaBenchmark:benchmark
           DO_SETUP: true
           # SETUP_ACTION: https://scm.my.org/shared-repos/fcli-actions/setup.yaml
-          SETUP_ACTION: --copy-from "${{ github.repository }}:${{ github.event.repository.default_branch }}/src/components"
+          SETUP_ACTION: --copy-from "${{ github.repository }}:${{ github.event.repository.default_branch }}"
           # SC_CLIENT_VERSION: 24.4.1
-          DO_PACKAGE_DEBUG: true
-          PACKAGE_EXTRA_OPTS: src/components
+          # DO_PACKAGE_DEBUG: true
+          # PACKAGE_EXTRA_OPTS: src/components
           # FOD_SAST_SCAN_EXTRA_OPTS:
           # DO_WAIT: true
           # DO_POLICY_CHECK: true

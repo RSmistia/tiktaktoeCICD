@@ -1,0 +1,3 @@
+setup:
+  copy-from:
+    - "${{ github.repository }}:${{ github.event.repository.default_branch }}/src/components"

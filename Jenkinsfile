@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'node'  // match the name you used in Global Tool Configuration
+    }
+
     environment {
         REGISTRY = "ghcr.io"
         IMAGE_NAME = "${env.JOB_NAME}".toLowerCase()

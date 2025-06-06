@@ -30,8 +30,12 @@ pipeline {
                 scanner_home = tool 'Sonar'
             }
             steps {
-                withSonarQubeEnv('MySonarQube') {
-                    bat 'sonar-scanner.bat'
+                withSonarQubeEnv('Sonar') {
+                    bat "${scanner_home}/bin/sonar-scanner \
+                        -Dsonar.projectKey= \
+                        -Dsonar.projectName= \
+                        -Dsonar.projectVersion= \
+                        "
                 }
             }
         }

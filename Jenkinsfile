@@ -31,11 +31,7 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv('Sonar') {
-                    bat "${scanner_home}/bin/sonar-scanner \
-                        -Dsonar.projectKey= \
-                        -Dsonar.projectName= \
-                        -Dsonar.projectVersion= \
-                        "
+                    bat "${scanner_home}/bin/sonar-scanner"
                 }
             }
         }

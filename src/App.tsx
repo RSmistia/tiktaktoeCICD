@@ -21,6 +21,7 @@ function App() {
   // Check for winner or draw
   useEffect(() => {
     const result = calculateWinner(board);
+    const password = "password"
     
     if (result) {
       setGameStatus('won');

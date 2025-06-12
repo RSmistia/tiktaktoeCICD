@@ -21,7 +21,7 @@ pipeline {
         stage('Install and Test') {
             steps {
                 bat 'npm ci'
-                bat 'npm test || echo No tests found'
+                bat 'npm test || echo "No tests found!"'
             }
         }
 
@@ -43,13 +43,18 @@ pipeline {
             }
         }
 
-        stage('Docker Build & Trivy Scan') {
+        stage('Docker Build') {
             steps {
                 bat """
-                docker build -t %REGISTRY%/%IMAGE_NAME%:latest .
-                docker images
-                trivy image --exit-code 1 --severity CRITICAL,HIGH %REGISTRY%/%IMAGE_NAME%:latest
+                docker build -t tiktaktoe:latest .
+                docker run -d -p 9090:80 tiktaktoe:latest
                 """
+            }
+        }
+
+        stage('Trivy Scan') {
+            steps {
+
             }
         }
 

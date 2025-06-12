@@ -52,12 +52,6 @@ pipeline {
             }
         }
 
-        stage('Trivy Scan') {
-            steps {
-
-            }
-        }
-
         stage('Serveo & BurpSuite Scan') {
             steps {
                 bat '''

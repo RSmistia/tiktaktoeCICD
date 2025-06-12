@@ -1,6 +1,6 @@
 # DevSecOps Pipeline Implementation for Tic Tac Toe Game
 
-![CICD Pipeline -SonarQube + Trivy (Container) + BurpSuite drawio](https://github.com/user-attachments/assets/51abe441-3675-4e47-be74-99219cda3d6d)
+![CICD Pipeline -SonarQube + Trivy (Container) + BurpSuite drawio (1)](https://github.com/user-attachments/assets/f479e6c4-9a16-41b7-980d-54e619d886c4)
 
 ![image](https://github.com/user-attachments/assets/5b2813a5-f493-4665-8964-77359b5be93a)
 

@@ -61,11 +61,54 @@ pipeline {
             }
         }
 
-        stage('Serveo & BurpSuite Scan') {
+        stage('BurpSuite Scan') {
             steps {
                 bat '''
-                REM This is a placeholder. You'll need to adapt your Bash script to PowerShell or batch
-                echo Simulating Serveo tunnel and BurpSuite scan...
+                    REM Build the JSON payload with jq
+                    json_payload=$(jq -n --arg url "$public_url" '{
+                        scan_configurations: [{
+                            name: "Crawl strategy - fastest",
+                            type: "NamedConfiguration"
+                        }],
+                        urls: [$url]
+                    }')
+                    
+                    REM Send the POST request and capture the Location header
+                    scan_id=$(curl -s -D - -o /dev/null -X POST \
+                        -H "Content-Type: application/json" \
+                        -d "$json_payload" \
+                        "http://192.168.30.5:1337/v0.1/scan" \
+                        | awk '/^location:/ { print $2 }' | tr -d '\r')
+
+                    echo "Scan ID: $scan_id"
+
+                    scan_result="http://192.168.30.5:1337/v0.1/scan/$scan_id"
+
+                    echo "Waiting for scan to complete..."
+                    retries=60  
+                    while [ $retries -gt 0 ]; do
+                    result=$(curl -s -X GET "$scan_result")
+                    progress=$(echo "$result" | jq '.scan_metrics.crawl_and_audit_progress // 0')
+  
+                    echo "Progress: $progress%"
+                    if [ "$progress" -eq 100 ]; then
+                    echo "Scan complete."
+                    echo "$result"
+                    
+                    REM Check for high severity issues
+                    echo "$result" | jq '
+                        [.issue_events[]?.issue.severity] | any(. == "medium")
+                            ' | grep -q true && exit 1
+
+                    exit 0
+                    fi
+                    
+                    sleep 5
+                    ((retries--))
+                    done
+
+                    echo "Timed out waiting for scan to complete."
+                    exit 1
                 '''
             }
         }

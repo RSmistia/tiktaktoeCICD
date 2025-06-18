@@ -54,9 +54,9 @@ pipeline {
 
         stage('Trivy Scan') {
             steps {
-                bat '
+                bat '''
                 docker run --rm -v /var/run/docker-sock
-                '
+                '''
             }
         }
 

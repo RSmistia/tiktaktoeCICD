@@ -56,7 +56,9 @@ pipeline {
             steps {
                 bat '''
                 mkdir .\results
-                docker run --rm -v /var/run/docker-sock:/var/run/docker.sock aquasec/trivy image -f json tiktaktoe:latest > .\results\scan.json
+                cd results
+                docker run --rm -v /var/run/docker-sock:/var/run/docker.sock aquasec/trivy image -f json tiktaktoe:latest > .\scan.json
+                cd ..
                 '''
             }
         }

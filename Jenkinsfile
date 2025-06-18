@@ -45,10 +45,18 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                bat """
+                bat '''
                 docker build -t tiktaktoe:latest .
                 docker run -d -p 9090:80 tiktaktoe:latest
-                """
+                '''
+            }
+        }
+
+        stage('Trivy Scan') {
+            steps {
+                bat '
+                docker run --rm -v /var/run/docker-sock
+                '
             }
         }
 

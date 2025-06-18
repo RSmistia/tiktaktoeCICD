@@ -24,8 +24,16 @@ pipeline {
                 bat 'npm test || echo "No tests found!"'
             }
         }
-
-        
+        stage('SonarQube Scan') {
+            environment {
+                scanner_home = tool 'Sonar'
+            }
+            steps {
+                withSonarQubeEnv('Sonar') {
+                    bat "${scanner_home}/bin/sonar-scanner"
+                }
+            }
+        }       
 
         stage('Build') {
             steps {

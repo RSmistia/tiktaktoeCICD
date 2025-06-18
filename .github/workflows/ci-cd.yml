@@ -44,9 +44,9 @@ jobs:
           FOD_CLIENT_ID: 37fc614b-cefc-4ad9-8333-bcd533026f6b		
           FOD_CLIENT_SECRET: OTliZW05VWhWb0loK1EmZzhXVUVPNF9nWUZaY1RR0
           FOD_RELEASE: CICD:main
-          DO_SETUP: true
+          # DO_SETUP: true
           # SETUP_ACTION: https://scm.my.org/shared-repos/fcli-actions/setup.yaml
-          SETUP_ACTION: --copy-from "${{ github.repository }}:${{ github.event.repository.default_branch }}"
+          # SETUP_ACTION: --copy-from "${{ github.repository }}:${{ github.event.repository.default_branch }}"
           # SC_CLIENT_VERSION: 24.4.1
           # DO_PACKAGE_DEBUG: true
           # PACKAGE_EXTRA_OPTS: src/components

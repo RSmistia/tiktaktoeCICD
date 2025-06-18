@@ -54,63 +54,91 @@ pipeline {
 
         stage('BurpSuite Scan') {
             steps {
-                bat '''
-        setlocal ENABLEDELAYEDEXPANSION
+                powershell '''
+            # Configuration
+            $burpServer = "http://192.168.30.5:1337"
+            $targetUrl = "http://localhost:9090"
+            $timeoutMinutes = 15
+            $pollInterval = 5
 
-        REM Create the JSON payload (requires jq)
-        echo Creating JSON payload...
-        echo.>{__tmp_payload__.json}
-        jq -n --arg url "http://localhost:9090" ^
-            "{ scan_configurations: [{ name: \\"Crawl strategy - fastest\\", type: \\"NamedConfiguration\\" }], urls: [\$url] }" > __tmp_payload__.json
+            # Create payload
+            $payload = @{
+                scan_configurations = @(
+                    @{
+                        name = "Crawl strategy - fastest"
+                        type = "NamedConfiguration"
+                    }
+                )
+                urls = @($targetUrl)
+            } | ConvertTo-Json
 
-        REM Start the scan and capture Location header
-        echo Starting scan...
-        for /f "tokens=2 delims= " %%A in ('curl -s -D - -o NUL -X POST -H "Content-Type: application/json" -d "@__tmp_payload__.json" http://192.168.30.5:1337/v0.1/scan ^| findstr /i "location:"') do (
-            set scan_id=%%A
-        )
+            # Start scan
+            $headers = @{
+                "Content-Type" = "application/json"
+            }
 
-        REM Trim carriage return from scan_id (if any)
-        for /f %%X in ('echo !scan_id!') do set "scan_id=%%X"
+            try {
+                $response = Invoke-RestMethod -Uri "$burpServer/v0.1/scan" `
+                    -Method Post `
+                    -Headers $headers `
+                    -Body $payload `
+                    -ErrorAction Stop
 
-        echo Scan ID: !scan_id!
+                $scanId = $response.id
+                Write-Host "Scan started with ID: $scanId"
+            }
+            catch {
+                Write-Host "Failed to start scan: $_"
+                exit 1
+            }
 
-        set "scan_result=http://192.168.30.5:1337/v0.1/scan/!scan_id!"
+            # Monitor scan progress
+            $startTime = Get-Date
+            $scanComplete = $false
+            $scanFailed = $false
 
-        REM Poll for scan completion
-        set retries=60
+            while (-not $scanComplete -and -not $scanFailed) {
+                if ((New-TimeSpan -Start $startTime).TotalMinutes -gt $timeoutMinutes) {
+                    Write-Host "Scan timed out after $timeoutMinutes minutes"
+                    exit 1
+                }
 
-        :loop
-        if !retries! LEQ 0 (
-            echo Timed out waiting for scan to complete.
-            exit /b 1
-        )
+                try {
+                    $result = Invoke-RestMethod -Uri "$burpServer/v0.1/scan/$scanId" `
+                        -Method Get `
+                        -Headers $headers `
+                        -ErrorAction Stop
 
-        curl -s -X GET "!scan_result!" > scan_result.json
-        for /f %%P in ('jq ".scan_metrics.crawl_and_audit_progress // 0" scan_result.json') do (
-            set progress=%%P
-        )
+                    $progress = $result.scan_metrics.crawl_and_audit_progress
+                    Write-Host "Scan progress: $progress%"
 
-        echo Progress: !progress!%%
+                    if ($progress -eq 100) {
+                        $scanComplete = $true
+                        Write-Host "Scan completed successfully"
 
-        if "!progress!"=="100" (
-            echo Scan complete.
-            type scan_result.json
+                        # Check for critical issues
+                        $hasCriticalIssues = $result.issue_events | 
+                            Where-Object { $_.issue.severity -in ("medium", "high", "critical") }
 
-            REM Check for medium or higher severity
-            jq "[.issue_events[]?.issue.severity] | any(. == \\"medium\\" or . == \\"high\\" or . == \\"critical\\")" scan_result.json | findstr true >nul
-            if !errorlevel! == 0 (
-                echo Found issues of medium or higher severity.
-                exit /b 1
-            ) else (
-                echo No critical issues found.
-                exit /b 0
-            )
-        )
+                        if ($hasCriticalIssues) {
+                            Write-Host "Critical issues found:"
+                            $hasCriticalIssues | Format-Table
+                            exit 1
+                        } else {
+                            Write-Host "No critical issues found"
+                            exit 0
+                        }
+                    }
+                }
+                catch {
+                    Write-Host "Error checking scan status: $_"
+                    $scanFailed = $true
+                    exit 1
+                }
 
-        timeout /t 5 >nul
-        set /a retries-=1
-        goto loop
-                '''
+                Start-Sleep -Seconds $pollInterval
+            }
+        '''
             }
         }
 

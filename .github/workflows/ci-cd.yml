@@ -42,7 +42,7 @@ jobs:
         env:
           FOD_URL: https://trial.fortify.com
           FOD_CLIENT_ID: a2050b40-a391-404d-bbd8-e1913b85ca46
-          FOD_CLIENT_SECRET: MClmVnRnUGg1WU11bUkoM3BzQnN1bmc5JHg5YVdy0
+          FOD_CLIENT_SECRET: NUkzWkF1OFY0emFvcmpdemdtXzJ4bU5TQ0x2eD910
           FOD_RELEASE: javaBenchmark:benchmark
           DO_SETUP: true
           # SETUP_ACTION: https://scm.my.org/shared-repos/fcli-actions/setup.yaml

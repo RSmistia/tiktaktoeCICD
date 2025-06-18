@@ -47,7 +47,7 @@ pipeline {
             steps {
                 bat '''
                 docker build -t tiktaktoe:latest .
-                docker run -d -p 9090:80 tiktaktoe:latest
+                docker run -d --name tiktaktoe -p 9090:80 tiktaktoe:latest
                 '''
             }
         }
@@ -136,6 +136,13 @@ pipeline {
                 git add kubernetes\\deployment.yaml
                 git commit -m "Update image tag to %IMAGE_TAG%" || echo No changes
                 git push
+                '''
+            }
+        }
+        stage('Stop Container') {
+            steps{
+                bat '''
+                    docker stop tiktaktoe
                 '''
             }
         }

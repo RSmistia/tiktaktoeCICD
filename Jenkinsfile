@@ -63,7 +63,7 @@ pipeline {
 
         stage('BurpSuite Scan') {
             steps {
-                bat '''
+                sh '''
                     REM Build the JSON payload with jq
                     json_payload=$(jq -n --arg url "$public_url" '{
                         scan_configurations: [{

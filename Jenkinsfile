@@ -70,7 +70,7 @@ pipeline {
         )
 
         REM Trim carriage return from scan_id (if any)
-        set "scan_id=!scan_id:\r=!"
+        for /f %%X in ('echo !scan_id!') do set "scan_id=%%X"
 
         echo Scan ID: !scan_id!
 

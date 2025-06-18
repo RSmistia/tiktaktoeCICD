@@ -41,9 +41,9 @@ jobs:
           debricked-sca-scan: true
         env:
           FOD_URL: https://trial.fortify.com
-          FOD_CLIENT_ID: 1b583374-2b4f-44db-986e-12e152b973f3	
-          FOD_CLIENT_SECRET: TWsxXClGd0VTOGxycDVFck9HMXZnMEdtTD9GZlp10
-          FOD_RELEASE: javaBenchmark:benchmark
+          FOD_CLIENT_ID: 37fc614b-cefc-4ad9-8333-bcd533026f6b		
+          FOD_CLIENT_SECRET: OTliZW05VWhWb0loK1EmZzhXVUVPNF9nWUZaY1RR0
+          FOD_RELEASE: CICD:main
           DO_SETUP: true
           # SETUP_ACTION: https://scm.my.org/shared-repos/fcli-actions/setup.yaml
           SETUP_ACTION: --copy-from "${{ github.repository }}:${{ github.event.repository.default_branch }}"

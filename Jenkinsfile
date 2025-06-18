@@ -63,52 +63,62 @@ pipeline {
 
         stage('BurpSuite Scan') {
             steps {
-                sh '''
-                    REM Build the JSON payload with jq
-                    json_payload=$(jq -n --arg url "$public_url" '{
-                        scan_configurations: [{
-                            name: "Crawl strategy - fastest",
-                            type: "NamedConfiguration"
-                        }],
-                        urls: [$url]
-                    }')
-                    
-                    REM Send the POST request and capture the Location header
-                    scan_id=$(curl -s -D - -o /dev/null -X POST \
-                        -H "Content-Type: application/json" \
-                        -d "$json_payload" \
-                        "http://192.168.30.5:1337/v0.1/scan" \
-                        | awk '/^location:/ { print $2 }' | tr -d '\r')
+                bat '''
+        setlocal ENABLEDELAYEDEXPANSION
 
-                    echo "Scan ID: $scan_id"
+        REM Create the JSON payload (requires jq)
+        echo Creating JSON payload...
+        echo.>{__tmp_payload__.json}
+        jq -n --arg url "http://localhost:9090" ^
+            "{ scan_configurations: [{ name: \\"Crawl strategy - fastest\\", type: \\"NamedConfiguration\\" }], urls: [\$url] }" > __tmp_payload__.json
 
-                    scan_result="http://192.168.30.5:1337/v0.1/scan/$scan_id"
+        REM Start the scan and capture Location header
+        echo Starting scan...
+        for /f "tokens=2 delims= " %%A in ('curl -s -D - -o NUL -X POST -H "Content-Type: application/json" -d "@__tmp_payload__.json" http://192.168.30.5:1337/v0.1/scan ^| findstr /i "location:"') do (
+            set scan_id=%%A
+        )
 
-                    echo "Waiting for scan to complete..."
-                    retries=60  
-                    while [ $retries -gt 0 ]; do
-                    result=$(curl -s -X GET "$scan_result")
-                    progress=$(echo "$result" | jq '.scan_metrics.crawl_and_audit_progress // 0')
-  
-                    echo "Progress: $progress%"
-                    if [ "$progress" -eq 100 ]; then
-                    echo "Scan complete."
-                    echo "$result"
-                    
-                    REM Check for high severity issues
-                    echo "$result" | jq '
-                        [.issue_events[]?.issue.severity] | any(. == "medium")
-                            ' | grep -q true && exit 1
+        REM Trim carriage return from scan_id (if any)
+        set "scan_id=!scan_id:\r=!"
 
-                    exit 0
-                    fi
-                    
-                    sleep 5
-                    ((retries--))
-                    done
+        echo Scan ID: !scan_id!
 
-                    echo "Timed out waiting for scan to complete."
-                    exit 1
+        set "scan_result=http://192.168.30.5:1337/v0.1/scan/!scan_id!"
+
+        REM Poll for scan completion
+        set retries=60
+
+        :loop
+        if !retries! LEQ 0 (
+            echo Timed out waiting for scan to complete.
+            exit /b 1
+        )
+
+        curl -s -X GET "!scan_result!" > scan_result.json
+        for /f %%P in ('jq ".scan_metrics.crawl_and_audit_progress // 0" scan_result.json') do (
+            set progress=%%P
+        )
+
+        echo Progress: !progress!%%
+
+        if "!progress!"=="100" (
+            echo Scan complete.
+            type scan_result.json
+
+            REM Check for medium or higher severity
+            jq "[.issue_events[]?.issue.severity] | any(. == \\"medium\\" or . == \\"high\\" or . == \\"critical\\")" scan_result.json | findstr true >nul
+            if !errorlevel! == 0 (
+                echo Found issues of medium or higher severity.
+                exit /b 1
+            ) else (
+                echo No critical issues found.
+                exit /b 0
+            )
+        )
+
+        timeout /t 5 >nul
+        set /a retries-=1
+        goto loop
                 '''
             }
         }

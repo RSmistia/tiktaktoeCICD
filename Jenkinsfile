@@ -147,7 +147,11 @@ pipeline {
                 (Get-Content .\\kubernetes\\deployment.yaml) -replace 'image: ghcr.io/rsmistia/tiktaktoecicd:sha-[0-9a-f]+', "image: ghcr.io/rsmistia/tiktaktoecicd:sha-$gitsha" | Set-Content .\\kubernetes\\deployment.yaml
 
                 git add kubernetes/deployment.yaml
-                git commit -m "Update Kubernetes deployment with new image sha: $sha [skip ci]" || echo "No changes to commit"; exit 1
+                git commit -m "Update Kubernetes deployment with new image sha: $sha [skip ci]" 
+                if ($LASTEXITCODE -ne 0) {
+                    Write-Output "Nochanges to commit"
+                    exit 1
+                }
                 git push
                 '''
             }

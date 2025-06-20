@@ -44,7 +44,8 @@ pipeline {
             steps {
                 bat '''
                 mkdir .\\results
-                docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image -f json tiktaktoe:latest > .\\results\\scan.json
+                REM Should select the path you want to save the results, for easier access.
+                docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image -f json tiktaktoe:latest > .\\results\\scan.json  
                 '''
             }
         }

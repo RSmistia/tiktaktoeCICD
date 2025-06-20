@@ -122,7 +122,6 @@ pipeline {
                             exit 1
                         } else {
                             Write-Host "No critical issues found"
-                            exit 0
                         }
                     }
                 }

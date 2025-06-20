@@ -6,9 +6,6 @@ pipeline {
     }
 
     environment {
-        REGISTRY = "ghcr.io"
-        IMAGE_NAME = "${env.JOB_NAME}".toLowerCase()
-        SSH_KEY_PATH = "${env.WORKSPACE}\\.ssh\\id_rsa_autossh"
     }
 
     stages {
@@ -24,6 +21,18 @@ pipeline {
                 bat 'npm test || echo "No tests found!"'
             }
         }
+
+        stage('SonarQube Scan') {
+            environment {
+                scanner_home = tool 'Sonar'  // match the name you used in Global Tool Configuration
+            }
+            steps {
+                withSonarQubeEnv('Sonar') {
+                    bat "${scanner_home}/bin/sonar-scanner"
+                }
+            }
+        }
+
         stage('Build') {
             steps {
                 bat 'npm run build'
@@ -53,7 +62,7 @@ pipeline {
         stage('BurpSuite Scan') {
             steps {
                 powershell '''
-            ssh rubens@192.168.30.5 "cd ~/Documents/tiktaktoeCICD && git pull && docker build -t tiktaktoe . && docker rm -f tiktaktoe-container; docker run -d --name tiktaktoe-container -p 9000:80 tiktaktoe"
+            ssh rubens@192.168.30.5 "cd ~/Documents/tiktaktoeCICD && git fetch && git pull && docker build -t tiktaktoe:latest . && docker rm -f tiktaktoe-container; docker run -d --name tiktaktoe-container -p 9000:80 tiktaktoe:latest"
 
 
             # Configuration
@@ -164,9 +173,11 @@ pipeline {
             }
         }
 
-        stage('Stop Container') {
+        stage('Remove Temporary Container') {
             steps{
                 bat '''
+                    REM Remove this step if you want to keep the container for testing purposes, for the next Jenkins build,
+                    REM you must delete the container manually, for the correct behavior to happen.
                     docker rm -f tiktaktoe
                 '''
             }

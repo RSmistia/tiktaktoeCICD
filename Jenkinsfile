@@ -78,11 +78,7 @@ pipeline {
             }
 
             try {
-                $response = Invoke-RestMethod -Uri "$burpServer/v0.1/scan" `
-                    -Method Post `
-                    -Headers $headers `
-                    -Body $payload `
-                    -ErrorAction Stop
+                Invoke-WebRequest -Uri "$burpServer/v0.1/scan" -Method POST -Headers $headers -Body $payload
 
                 $scanId = $response.id
                 Write-Host "Scan started with ID: $scanId"

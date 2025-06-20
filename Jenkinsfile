@@ -5,9 +5,6 @@ pipeline {
         nodejs 'node'  // match the name you used in Global Tool Configuration
     }
 
-    environment {
-    }
-
     stages {
         stage('Checkout') {
             steps {

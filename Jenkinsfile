@@ -145,6 +145,8 @@ pipeline {
                 git checkout main
                 git config user.email = "rn.sousa@campus.fct.unl.pt"
                 git config user.name = "RSmistia"
+                git fetch
+                git pull
 
                 $gitsha = git rev-parse HEAD
 

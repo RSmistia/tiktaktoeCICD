@@ -140,31 +140,19 @@ pipeline {
         }
 
         stage('Update Kubernetes') {
-            when {
-                allOf {
-                    branch 'main'
-                    expression { return currentBuild.result == null || currentBuild.result == 'SUCCESS' }
-                }
-            }
-            environment {
-                TOKEN = credentials('github-token')
-            }
             steps {
-                bat '''
-                git config user.name "Jenkins"
-                git config user.email "jenkins@example.com"
+                powershell '''
+                $gitsha = git rev-parse HEAD
 
-                FOR /F %%i IN ('git rev-parse --short HEAD') DO SET IMAGE_TAG=sha-%%i
-                SET "NEW_IMAGE=%REGISTRY%/%IMAGE_NAME%:%IMAGE_TAG%"
-                
-                powershell -Command "(Get-Content kubernetes\\deployment.yaml) -replace 'image: ghcr.io/.+', 'image: %NEW_IMAGE%' | Set-Content kubernetes\\deployment.yaml"
+                (Get-Content .\\kubernetes\\deployment.yaml) -replace 'image: ghcr.io/rsmistia/tiktaktoecicd:sha-[0-9a-f]+', "image: ghcr.io/rsmistia/tiktaktoecicd:sha-$gitsha" | Set-Content .\\kubernetes\\deployment.yaml
 
-                git add kubernetes\\deployment.yaml
-                git commit -m "Update image tag to %IMAGE_TAG%" || echo No changes
+                git add kubernetes/deployment.yaml
+                git commit -m "Update Kubernetes deployment with new image sha: $sha [skip ci]" || echo "No changes to commit"; exit 1
                 git push
                 '''
             }
         }
+
         stage('Stop Container') {
             steps{
                 bat '''

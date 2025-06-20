@@ -57,7 +57,7 @@ The game implements the following rules:
 1. Clone the repository:
    ```bash
    git clone https://github.com/RSmistia/tiktaktoeCICD.git
-   cd devsecops-demo
+   cd tiktaktoeCICD
    ```
 
 2. Install dependencies:

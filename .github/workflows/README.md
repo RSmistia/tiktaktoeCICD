@@ -1,16 +1,19 @@
 # GitHub Actions CI/CD Pipeline
+# Author Ruben Sousa, Timestamp SGS
 
-This directory contains the GitHub Actions workflow for the Tic Tac Toe application's CI/CD pipeline.
+
+This directory contains the GitHub Actions workflow for the Tik Tak Toe application's CI/CD pipeline.
 
 ## Pipeline Stages
 
 The CI/CD pipeline consists of the following stages:
 
 1. **Unit Testing** - Runs the test suite using Vitest
-2. **Static Code Analysis** - Performs linting with ESLint
+2. **Static Code Analysis** - Performs SAST using either SonarQube (free version, hosted on-site) or Fortify on Demand (trial version)
 3. **Build** - Creates a production build of the application
 4. **Docker Image Creation** - Builds a Docker image using a multi-stage Dockerfile
 5. **Docker Image Scan** - Scans the image for vulnerabilities using Trivy
+6. **Dynamic Code Analysis** - Performs DAST using BurpSuite Professional (hosted on-site)
 6. **Docker Image Push** - Pushes the image to GitHub Container Registry
 7. **Update Kubernetes Deployment** - Updates the Kubernetes deployment file with the new image tag
 
@@ -28,6 +31,8 @@ The "Update Kubernetes Deployment" stage:
 The workflow requires the following GitHub secrets:
 
 - `GITHUB_TOKEN` - Automatically provided by GitHub Actions, used for pushing to the repository and the container registry
+- `SONAR_TOKEN` - Provides the token necessary for performing SAST analysis using the SonarQube Tool
+- `SONAR_HOST_URL` - The SonarQube Server URL available on the internet, using serveo.net to create the necessary tunnel between the localhost and the internet.
 
 ## Continuous Deployment
 

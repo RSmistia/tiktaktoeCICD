@@ -1,3 +1,5 @@
+//Author Ruben Sousa, Timestamp SGS
+
 pipeline {
     agent any
 

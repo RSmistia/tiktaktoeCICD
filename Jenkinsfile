@@ -142,9 +142,10 @@ pipeline {
         stage('Update Kubernetes') {
             steps {
                 powershell '''
+                git checkout main
                 git config user.email = "rn.sousa@campus.fct.unl.pt"
                 git config user.name = "RSmistia"
-                
+
                 $gitsha = git rev-parse HEAD
 
                 (Get-Content .\\kubernetes\\deployment.yaml) -replace 'image: ghcr.io/rsmistia/tiktaktoecicd:sha-[0-9a-f]+', "image: ghcr.io/rsmistia/tiktaktoecicd:sha-$gitsha" | Set-Content .\\kubernetes\\deployment.yaml

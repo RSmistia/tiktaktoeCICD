@@ -164,7 +164,7 @@ pipeline {
         stage('Stop Container') {
             steps{
                 bat '''
-                    docker stop tiktaktoe
+                    docker rm -f tiktaktoe
                 '''
             }
         }

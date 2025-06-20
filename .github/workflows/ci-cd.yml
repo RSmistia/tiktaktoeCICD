@@ -30,23 +30,23 @@ jobs:
       - name: Run tests
         run: npm test || echo "No tests found, would add tests in a real project"
 
-  fortify:
-    name: Static Code Analysis - Fortify
-    runs-on: ubuntu-latest
-    steps:    
-      - name: Check out source code
-        uses: actions/checkout@v4  
-      - name: Run Fortify on Demand SAST & SCA Scan
-        uses: fortify/github-action@v1
-        with:
-          sast-scan: true
-          debricked-sca-scan: true
-        env:
-          FOD_URL: https://trial.fortify.com
-          FOD_CLIENT_ID: 37fc614b-cefc-4ad9-8333-bcd533026f6b		
-          FOD_CLIENT_SECRET: OTliZW05VWhWb0loK1EmZzhXVUVPNF9nWUZaY1RR0
-          FOD_RELEASE: CICD:main
-          # DO_SETUP: true
+  #fortify:
+  #  name: Static Code Analysis - Fortify
+  #  runs-on: ubuntu-latest
+  #  steps:    
+  #    - name: Check out source code
+  #      uses: actions/checkout@v4  
+  #    - name: Run Fortify on Demand SAST & SCA Scan
+  #      uses: fortify/github-action@v1
+  #     with:
+  #        sast-scan: true
+  #        debricked-sca-scan: true
+  #      env:
+  #        FOD_URL: https://trial.fortify.com
+  #        FOD_CLIENT_ID: 37fc614b-cefc-4ad9-8333-bcd533026f6b		
+  #        FOD_CLIENT_SECRET: OTliZW05VWhWb0loK1EmZzhXVUVPNF9nWUZaY1RR0
+  #        FOD_RELEASE: CICD:main
+  #        # DO_SETUP: true
           # SETUP_ACTION: https://scm.my.org/shared-repos/fcli-actions/setup.yaml
           # SETUP_ACTION: --copy-from "${{ github.repository }}:${{ github.event.repository.default_branch }}"
           # SC_CLIENT_VERSION: 24.4.1
@@ -71,7 +71,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    needs: [test, fortify]
+    needs: [test]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

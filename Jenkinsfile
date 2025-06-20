@@ -44,7 +44,8 @@ pipeline {
             steps {
                 bat '''
                 mkdir .\\results
-                docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image -f json tiktaktoe:latest > .\\results\\scan.json
+                REM Should select the path you want to save the results, for easier access.
+                docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image -f json tiktaktoe:latest > .\\results\\scan.json  
                 '''
             }
         }
@@ -145,6 +146,8 @@ pipeline {
                 git checkout main
                 git config user.email = "rn.sousa@campus.fct.unl.pt"
                 git config user.name = "RSmistia"
+                git fetch
+                git pull
 
                 $gitsha = git rev-parse HEAD
 
@@ -164,7 +167,7 @@ pipeline {
         stage('Stop Container') {
             steps{
                 bat '''
-                    docker stop tiktaktoe
+                    docker rm -f tiktaktoe
                 '''
             }
         }

@@ -244,11 +244,9 @@ jobs:
           }')
 
           # Send the POST request and capture the Location header
-          scan_id=$(curl -s -D - -o /dev/null -X POST \
-            -H "Content-Type: application/json" \
-            -d "$json_payload" \
-            "${{ secrets.BURP_HOST_URL }}v0.1/scan" \
-            | awk '/^location:/ { print $2 }' | tr -d '\r')
+          response=$(curl -s -D - -X POST 'https://bk6gdkuioqvq2bjja4lxhabiri.srv.us/v0.1/scan' -d "$json_payload")
+          echo "$response"
+          scan_id=$(echo "$response" | awk '/^Location:/ { print $2 }' | tr -d '\r')
 
           echo "Scan ID: $scan_id"
 

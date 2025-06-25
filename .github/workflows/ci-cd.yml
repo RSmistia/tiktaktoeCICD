@@ -175,10 +175,10 @@ jobs:
           # Configuration variables
           SSH_KEY_PATH="$HOME/.ssh/id_rsa_autossh"
           CONTAINER_NAME="autoburp"
-          REMOTE_PORT=80
+          REMOTE_PORT=1
           LOCAL_SERVER="172.17.0.1"
           LOCAL_PORT=1010
-          SSH_SERVER="serveo.net"
+          SSH_SERVER="srv.us"
           OUTPUT_FILE="output.txt"
 
           docker run -d -p $LOCAL_PORT:$REMOTE_PORT  "$NEW_IMAGE"
@@ -205,7 +205,7 @@ jobs:
           docker run -d -it --rm --name "$CONTAINER_NAME" \
               -v ${SSH_KEY_PATH}:${SSH_KEY_PATH} \
               aranajuan/autossh \
-              autossh -M 0 -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" -o "ServerAliveInterval 30" -o "ServerAliveCountMax 3" \
+              autossh -M 0 -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=/dev/null" -o "ServerAliveInterval 30" -o "ServerAliveCountMax 3" -i "$SSH_KEY_PATH" \
               -R $REMOTE_PORT:"$LOCAL_SERVER":$LOCAL_PORT "$SSH_SERVER"
 
           sleep 5
@@ -217,7 +217,7 @@ jobs:
 
           echo "Waiting for Serveo URL..."
           timeout=60
-          while ! grep -q "Forwarding HTTP traffic" "$OUTPUT_FILE" && [ $timeout -gt 0 ]; do
+          while ! grep -q "1: " "$OUTPUT_FILE" && [ $timeout -gt 0 ]; do
             sleep 1
             ((timeout--))
           done
@@ -230,7 +230,7 @@ jobs:
           fi
 
           # Extract URL from the output
-          public_url=$(grep "Forwarding HTTP traffic" "$OUTPUT_FILE" | sed -n 's/.*Forwarding HTTP traffic from //p' | tr -d '\r\n')
+          public_url=$(grep "1: " "$OUTPUT_FILE" | sed -n 's/.*1: //p' | tr -d '\r\n')
           
           echo "Your public URL is: $public_url"
 
@@ -247,12 +247,12 @@ jobs:
           scan_id=$(curl -s -D - -o /dev/null -X POST \
             -H "Content-Type: application/json" \
             -d "$json_payload" \
-            "http://192.168.30.5:1337/v0.1/scan" \
+            "${{ secrets.BURP_HOST_URL }}v0.1/scan" \
             | awk '/^location:/ { print $2 }' | tr -d '\r')
 
           echo "Scan ID: $scan_id"
 
-          scan_result="http://192.168.30.5:1337/v0.1/scan/$scan_id"
+          scan_result="${{ secrets.BURP_HOST_URL }}v0.1/scan/$scan_id"
 
           echo "Waiting for scan to complete..."
           retries=60  
